@@ -18,7 +18,7 @@ struct ContactListView: View {
         createTable(db: self.db)
         
         // Insert sample data
-        insertContact(db: self.db, contact: Contact(name: "Jol", phone: "90767"))
+        insertContact(db: self.db, contact: Contact(name: "Jonny", nickname: "nick", phone: "90767"))
         insertContact(db: self.db, contact: Contact(name: "Olaf", phone: "444", address: "Couchirardrard"))
         insertContact(db: self.db, contact: Contact(name: "Elon", email: "elon@example.com", phone: "12345", address: "Mars"))
     }
@@ -30,11 +30,13 @@ struct ContactListView: View {
                     destination: ContactDetailView(contact: contact),
                     label: {
                         Text(contact.name as String)
+                        Text(contact.nickname == nil ? "" : " (\(contact.nickname!))")
                     }
                 )
             }
             .navigationTitle("Contacts")
             .onAppear(perform: loadContacts)
+            .listStyle(.plain)
         }
     }
         

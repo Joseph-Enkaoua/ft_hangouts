@@ -12,8 +12,12 @@ struct ContactDetailView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("Name: \(contact.name as String)")
-                .font(.headline)
+            Text("\(contact.name as String)")
+            .font(.largeTitle)
+            .bold()
+            .frame(maxWidth: .infinity)
+            .multilineTextAlignment(.center)
+
             if let nickname = contact.nickname {
                 Text("Nickname: \(nickname as String)")
             }
@@ -27,6 +31,5 @@ struct ContactDetailView: View {
             Spacer()
         }
         .padding()
-        .navigationTitle(contact.name as String)
     }
 }
