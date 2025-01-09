@@ -6,8 +6,13 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		2D24DECB2D2BF86F00A062D6 /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D24DECA2D2BF86F00A062D6 /* libsqlite3.tbd */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		2D24DEB82D28824200A062D6 /* hangouts.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = hangouts.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		2D24DECA2D2BF86F00A062D6 /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -23,6 +28,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2D24DECB2D2BF86F00A062D6 /* libsqlite3.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -33,9 +39,13 @@
 			isa = PBXGroup;
 			children = (
 				2D24DEBA2D28824200A062D6 /* hangouts */,
+				2D24DEC92D2BF86F00A062D6 /* Frameworks */,
 				2D24DEB92D28824200A062D6 /* Products */,
 			);
+			indentWidth = 4;
 			sourceTree = "<group>";
+			tabWidth = 4;
+			wrapsLines = 1;
 		};
 		2D24DEB92D28824200A062D6 /* Products */ = {
 			isa = PBXGroup;
@@ -43,6 +53,14 @@
 				2D24DEB82D28824200A062D6 /* hangouts.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		2D24DEC92D2BF86F00A062D6 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				2D24DECA2D2BF86F00A062D6 /* libsqlite3.tbd */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
