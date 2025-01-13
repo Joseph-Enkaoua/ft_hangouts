@@ -88,4 +88,3 @@ struct ContentView_Previews: PreviewProvider {
         ContactListView()
     }
 }
-

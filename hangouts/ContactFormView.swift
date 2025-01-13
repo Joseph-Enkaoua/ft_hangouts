@@ -10,7 +10,6 @@ import SwiftUI
 struct ContactFormView: View{
     let contact: Contact?
     
-    @State private var navigationPath = NavigationPath()
     @State private var id: Int? = nil
     @State private var name: String = ""
     @State private var email: String = ""
@@ -19,6 +18,7 @@ struct ContactFormView: View{
     @State private var address: String = ""
     @State private var message: String = ""
     @State private var savedContact: Contact? = nil
+    @State private var navigateToDetail = false
 
     init(contact: Contact? = nil) {
         self.contact = contact
@@ -38,14 +38,14 @@ struct ContactFormView: View{
                         .background(Color(UIColor.secondarySystemBackground))
                         .cornerRadius(8)
                         .shadow(color: .gray.opacity(0.3), radius: 4, x: 0, y: 2)
-
+                    
                     TextField("Email", text: $email)
                         .keyboardType(.emailAddress)
                         .padding()
                         .background(Color(UIColor.secondarySystemBackground))
                         .cornerRadius(8)
                         .shadow(color: .gray.opacity(0.3), radius: 4, x: 0, y: 2)
-
+                    
                     TextField("Nickname", text: $nickname)
                         .padding()
                         .background(Color(UIColor.secondarySystemBackground))
@@ -78,8 +78,8 @@ struct ContactFormView: View{
                         .cornerRadius(10)
                         .shadow(color: .purple.opacity(0.4), radius: 5, x: 0, y: 3)
                 }
-                .disabled(name.isEmpty || phone.isEmpty)
-                .opacity(name.isEmpty || phone.isEmpty ? 0.5 : 1.0)
+                .disabled(name.isEmpty || phone.isEmpty || address.count > 150 || phone.count > 15  || nickname.count > 50 || name.count > 50 || email.count > 50)
+                .opacity(name.isEmpty || phone.isEmpty || address.count > 150 || phone.count > 15  || nickname.count > 50 || name.count > 50 || email.count > 50 ? 0.5 : 1.0)
                 
                 if !message.isEmpty {
                     Text(message)
@@ -88,22 +88,22 @@ struct ContactFormView: View{
                         .multilineTextAlignment(.center)
                         .padding()
                 }
-                
-                if let savedContact = savedContact {
-                    NavigationLink(destination: ContactDetailView(contact: savedContact)) {
-                        EmptyView()
-                    }
-                }
-}
+            }
             .padding()
             .background(Color(UIColor.systemBackground))
             .cornerRadius(12)
             //        .shadow(color: .gray.opacity(0.2), radius: 10, x: 0, y: 5)
-            .padding()
+            
+            .navigationDestination(isPresented: $navigateToDetail) {
+                if let savedContact = savedContact {
+                    ContactDetailView(contact: savedContact)
+                } else {
+                    EmptyView()
+                }
+            }
         }
-
     }
-    
+
     private func loadContactDetails(contact: Contact) {
         id = contact.id
         name = contact.name as String
@@ -112,10 +112,8 @@ struct ContactFormView: View{
         phone = contact.phone as String
         address = (contact.address ?? "") as String
     }
-    
+
     private func submitForm() {
-        validateForm()
-        
         var updatedContact = Contact(
             id: id,
             name: name,
@@ -124,7 +122,7 @@ struct ContactFormView: View{
             phone: phone,
             address: address.isEmpty ? nil : address
         )
-        
+
         do {
             if let contactId = id {
                 updatedContact.id = contactId
@@ -137,31 +135,9 @@ struct ContactFormView: View{
                 updatedContact = newContact
             }
             savedContact = updatedContact
+            navigateToDetail = true
         } catch {
             message = "Failed to save contact: \(error)"
-        }
-    }
-    
-    private func validateForm() {
-        guard !name.isEmpty, !phone.isEmpty else {
-            message = "Name and phone are required."
-            return
-        }
-        guard name.count <= 50 , nickname.count <= 50 else {
-            message = "Name and Nickname must be less than 50 characters."
-            return
-        }
-        guard email.count <= 50 else {
-            message = "Email must be less than 50 characters."
-            return
-        }
-        guard phone.count <= 15 else {
-            message = "Phone must be less than 15 characters."
-            return
-        }
-        guard address.count <= 150 else {
-            message = "Address must be less than 150 characters."
-            return
         }
     }
 }
