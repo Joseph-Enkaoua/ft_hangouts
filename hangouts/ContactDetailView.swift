@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ContactDetailView: View {
     let contact: Contact
+    @Binding var navigationPath: NavigationPath
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -17,47 +18,44 @@ struct ContactDetailView: View {
             .bold()
             .frame(maxWidth: .infinity)
             .multilineTextAlignment(.center)
-
-            if let nickname = contact.nickname {
-                HStack {
-                    Text("Nickname:")
-                    Spacer()
-                    Text("\(nickname as String)")
+            
+            List {
+                if let nickname = contact.nickname {
+                    HStack {
+                        Text("Nickname:")
+                        Spacer()
+                        Text("\(nickname as String)")
+                    }
                 }
-                Divider()
-                    .background(Color.gray)
-            }
-            HStack {
-                Text("Phone:")
-                Spacer()
-                Text("\(contact.phone as String)")
-            }
-            if let address = contact.address {
-                Divider()
-                    .background(Color.gray)
                 HStack {
-                    Text("Address:")
+                    Text("Phone:")
                     Spacer()
-                    Text("\(address as String)")
+                    Text("\(contact.phone as String)")
                 }
-            }
-            if let email = contact.email {
-                Divider()
-                    .background(Color.gray)
-                HStack {
-                    Text("Email:")
-                    Spacer()
-                    Text("\(email as String)")
+                if let address = contact.address {
+                    HStack {
+                        Text("Address:")
+                        Spacer()
+                        Text("\(address as String)")
+                    }
+                }
+                if let email = contact.email {
+                    HStack {
+                        Text("Email:")
+                        Spacer()
+                        Text("\(email as String)")
+                    }
                 }
             }
             Spacer()
         }
-        .padding()
     }
 }
 
 struct ContactDetailView_Previews: PreviewProvider {
     static var previews: some View {
-        ContactDetailView(contact: Contact(name: "jnai", phone: "980843"))
+        @State var mockNavigationPath = NavigationPath()
+        
+        ContactDetailView(contact: Contact(name: "jnai", phone: "980843"), navigationPath: $mockNavigationPath)
     }
 }

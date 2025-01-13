@@ -17,7 +17,7 @@ public enum SQLiteError: Error {
 }
 
 // The contact struct
-public struct Contact: Identifiable {
+public struct Contact: Identifiable, Hashable {
     public var id: Int?
     var name: NSString
     var nickname: NSString?
@@ -25,6 +25,14 @@ public struct Contact: Identifiable {
     var phone: NSString
     var address: NSString?
     
+    public static func == (lhs: Contact, rhs: Contact) -> Bool {
+        return lhs.id == rhs.id
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+
     init(
         id: Int? = nil,
         name: String,

@@ -10,6 +10,7 @@ import SwiftUI
 struct ContactListView: View {
     @Environment(\.scenePhase) private var scenePhase
     @State private var contacts: [Contact] = []
+    @State private var navigationPath = NavigationPath()
 
     init() {
         // Insert sample data
@@ -20,34 +21,33 @@ struct ContactListView: View {
     }
 
     var body: some View {
-        NavigationView() {
+        NavigationStack(path: $navigationPath) {
             ZStack {
                 // Main content
-                List(contacts, id: \.id) { contact in
-                    NavigationLink(
-                        destination: ContactDetailView(contact: contact),
-                        label: {
-                            VStack(alignment: .leading) {
-                                Text(contact.name as String)
-                                    .font(.headline)
-                                if let nickname = contact.nickname {
-                                    Text("(\(nickname))")
-                                        .font(.subheadline)
-                                        .foregroundColor(.gray)
-                                }
+                List(contacts) { contact in
+                    NavigationLink(value: contact) {
+                        VStack(alignment: .leading) {
+                            Text(contact.name as String)
+                                .font(.headline)
+                            if let nickname = contact.nickname {
+                                Text("(\(nickname))")
+                                    .font(.subheadline)
+                                    .foregroundColor(.gray)
                             }
                         }
-                    )
+                    }
                 }
                 .navigationTitle("Contacts")
-                .onAppear(perform: loadContacts)
                 .onChange(of: scenePhase) {
                     if scenePhase == .active {
-                        loadContacts() // Refresh contacts when app returns to foreground
+                        loadContacts()
                     }
                 }
                 .listStyle(.plain)
-                
+                .navigationDestination(for: Contact.self) { contact in
+                    ContactDetailView(contact: contact, navigationPath: $navigationPath)
+                }
+
                 // Floating Button
                 VStack {
                     Spacer()
@@ -71,6 +71,7 @@ struct ContactListView: View {
                 }
             }
         }
+        .onAppear(perform: loadContacts)
     }
         
     // Load contacts from the database

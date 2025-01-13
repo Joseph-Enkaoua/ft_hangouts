@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ContactFormView: View{
     let contact: Contact?
+    @State private var navigationPath = NavigationPath()
     
     @State private var id: Int? = nil
     @State private var name: String = ""
@@ -96,7 +97,7 @@ struct ContactFormView: View{
             
             .navigationDestination(isPresented: $navigateToDetail) {
                 if let savedContact = savedContact {
-                    ContactDetailView(contact: savedContact)
+                    ContactDetailView(contact: savedContact, navigationPath: $navigationPath)
                 } else {
                     EmptyView()
                 }
