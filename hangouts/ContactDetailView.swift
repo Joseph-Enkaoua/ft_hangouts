@@ -19,17 +19,45 @@ struct ContactDetailView: View {
             .multilineTextAlignment(.center)
 
             if let nickname = contact.nickname {
-                Text("Nickname: \(nickname as String)")
+                HStack {
+                    Text("Nickname:")
+                    Spacer()
+                    Text("\(nickname as String)")
+                }
+                Divider()
+                    .background(Color.gray)
+            }
+            HStack {
+                Text("Phone:")
+                Spacer()
+                Text("\(contact.phone as String)")
+            }
+            if let address = contact.address {
+                Divider()
+                    .background(Color.gray)
+                HStack {
+                    Text("Address:")
+                    Spacer()
+                    Text("\(address as String)")
+                }
             }
             if let email = contact.email {
-                Text("Email: \(email as String)")
-            }
-            Text("Phone: \(contact.phone as String)")
-            if let address = contact.address {
-                Text("Address: \(address as String)")
+                Divider()
+                    .background(Color.gray)
+                HStack {
+                    Text("Email:")
+                    Spacer()
+                    Text("\(email as String)")
+                }
             }
             Spacer()
         }
         .padding()
+    }
+}
+
+struct ContactDetailView_Previews: PreviewProvider {
+    static var previews: some View {
+        ContactDetailView(contact: Contact(name: "jnai", phone: "980843"))
     }
 }

@@ -66,9 +66,9 @@ func createTable(db: SQLiteDatabase) {
     }
 }
 
-func insertContact(db: SQLiteDatabase, contact: Contact) {
+func insertContact(db: SQLiteDatabase, contact: Contact) -> Contact? {
     do {
-        try db.insertContact(contact: contact)
+        return try db.insertContact(contact: contact)
     } catch let error as SQLiteError {
         switch error {
         case .Bind(let message):
@@ -81,6 +81,7 @@ func insertContact(db: SQLiteDatabase, contact: Contact) {
     } catch {
         print("Unknown error: \(error)")
     }
+    return nil
 }
 
 func updateContact(db: SQLiteDatabase, contact: Contact) {

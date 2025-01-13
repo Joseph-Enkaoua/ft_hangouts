@@ -8,44 +8,84 @@
 import SwiftUI
 
 struct ContactListView: View {
+    @Environment(\.scenePhase) private var scenePhase
     @State private var contacts: [Contact] = []
-    private let db: SQLiteDatabase
 
     init() {
-        // Initialize the database
-        destroyDatabase() // remove on production!
-        self.db = createDatabase()
-        createTable(db: self.db)
-        
         // Insert sample data
-        insertContact(db: self.db, contact: Contact(name: "Jonny", nickname: "nick", phone: "90767"))
-        insertContact(db: self.db, contact: Contact(name: "Olaf", phone: "444", address: "Couchirardrard"))
-        insertContact(db: self.db, contact: Contact(name: "Elon", email: "elon@example.com", phone: "12345", address: "Mars"))
+        let a1 = insertContact(db: db, contact: Contact(name: "Jonny", nickname: "nick", phone: "90767"))
+        let a2 = insertContact(db: db, contact: Contact(name: "Olaf", phone: "444", address: "Couchirardrard"))
+        let a3 = insertContact(db: db, contact: Contact(name: "Elon", email: "elon@example.com", phone: "12345", address: "Mars"))
+        print(a1 ?? "r" , a2 ?? "r" , a3 ?? "r")
     }
 
     var body: some View {
-        NavigationView {
-            List(contacts, id: \.id) { contact in
-                NavigationLink(
-                    destination: ContactDetailView(contact: contact),
-                    label: {
-                        Text(contact.name as String)
-                        Text(contact.nickname == nil ? "" : " (\(contact.nickname!))")
+        NavigationView() {
+            ZStack {
+                // Main content
+                List(contacts, id: \.id) { contact in
+                    NavigationLink(
+                        destination: ContactDetailView(contact: contact),
+                        label: {
+                            VStack(alignment: .leading) {
+                                Text(contact.name as String)
+                                    .font(.headline)
+                                if let nickname = contact.nickname {
+                                    Text("(\(nickname))")
+                                        .font(.subheadline)
+                                        .foregroundColor(.gray)
+                                }
+                            }
+                        }
+                    )
+                }
+                .navigationTitle("Contacts")
+                .onAppear(perform: loadContacts)
+                .onChange(of: scenePhase) {
+                    if scenePhase == .active {
+                        loadContacts() // Refresh contacts when app returns to foreground
                     }
-                )
+                }
+                .listStyle(.plain)
+                
+                // Floating Button
+                VStack {
+                    Spacer()
+                    HStack {
+                        Spacer()
+                        NavigationLink(
+                            destination: ContactFormView(),
+                            label: {
+                                Image(systemName: "plus")
+                                    .resizable()
+                                    .frame(width: 24, height: 24)
+                                    .padding()
+                                    .foregroundColor(.white)
+                                    .background(Color.purple)
+                                    .clipShape(Circle())
+                                    .shadow(color: .gray.opacity(0.8), radius: 5, x: 0, y: 3)
+                            }
+                        )
+                    }
+                    .padding()
+                }
             }
-            .navigationTitle("Contacts")
-            .onAppear(perform: loadContacts)
-            .listStyle(.plain)
         }
     }
         
     // Load contacts from the database
     private func loadContacts() {
         do {
-            self.contacts = try selectAllContacts(db: self.db)
+            self.contacts = try selectAllContacts(db: db)
         } catch {
             print("Error loading contacts: \(error)")
         }
     }
 }
+
+struct ContentView_Previews: PreviewProvider {
+    static var previews: some View {
+        ContactListView()
+    }
+}
+

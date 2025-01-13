@@ -103,9 +103,9 @@ protocol SQLTable {
 extension Contact: SQLTable {
     static var createStatement: String {
         return """
-            CREATE TABLE Contact (
+            CREATE TABLE IF NOT EXISTS Contact (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL CHECK (LENGTH(name) <= 100),
+            name TEXT NOT NULL CHECK (LENGTH(name) <= 50),
             nickname TEXT CHECK (LENGTH(nickname) <= 50),
             email TEXT CHECK (LENGTH(email) <= 50),
             phone TEXT NOT NULL CHECK (LENGTH(phone) <= 15),
@@ -123,7 +123,7 @@ extension Contact: SQLTable {
         return "SELECT * FROM Contact WHERE id = ?;"
     }
     static var selectAllStatement: String {
-        return "SELECT * FROM Contact;"
+        return "SELECT * FROM Contact ORDER BY name;"
     }
     static var updateStatement: String {
         return "UPDATE Contact SET name = ?, nickname = ?, email = ?, phone = ?, address = ? WHERE id = ?;"
@@ -147,7 +147,7 @@ extension SQLiteDatabase {
 
 // Insert contact
 extension SQLiteDatabase {
-    func insertContact(contact: Contact) throws {
+    func insertContact(contact: Contact) throws -> Contact? {
         let insertStatement = try prepareStatement(sqlQueryString: Contact.insertStatement)
         defer {
             sqlite3_finalize(insertStatement)
@@ -189,6 +189,20 @@ extension SQLiteDatabase {
         }
         
         print("Successfully inserted row.")
+        
+        // Retrieve the last inserted row ID
+        let lastInsertRowId = sqlite3_last_insert_rowid(dbPointer)
+        print("Successfully inserted row with ID: \(lastInsertRowId).")
+        
+        // Return the created Contact with the assigned ID
+        return Contact(
+            id: Int(lastInsertRowId),
+            name: contact.name as String,
+            nickname: contact.nickname as? String,
+            email: contact.email as? String,
+            phone: contact.phone as String,
+            address: contact.address as? String
+        )
     }
 }
 
